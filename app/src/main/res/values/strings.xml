@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Hotel (JVM)</string>
+
+    <string name="room_type_placeholder">Type: unknown</string>
+    <string name="room_floor_placeholder">Floor: unknown</string>
+    <string name="room_isFree_placeholder">Status: free</string>
+</resources>
