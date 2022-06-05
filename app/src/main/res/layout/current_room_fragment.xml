@@ -140,6 +140,20 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/delete_room_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:clickable="true"
+            android:contentDescription="@string/delete_btn_alt"
+            android:src="@android:drawable/ic_menu_delete"
+            android:backgroundTint="?attr/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/edit_room_button"
+            app:layout_constraintStart_toEndOf="@+id/book_room_button"
+            android:focusable="true" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/edit_room_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

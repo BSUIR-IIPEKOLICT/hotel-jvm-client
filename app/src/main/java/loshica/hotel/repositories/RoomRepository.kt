@@ -21,7 +21,11 @@ interface RoomRepository {
     suspend fun create(@Body dto: RoomDto): Response<Room>
 
     @PUT("/rooms/{id}")
-    suspend fun change(@Path("id") id: Int, @Body dto: RoomDto): Response<Room>
+    suspend fun change(
+        @Path("id") id: Int,
+        @Query("status") status: String,
+        @Body dto: RoomDto
+    ): Response<Room>
 
     @DELETE("/rooms/{id}")
     suspend fun delete(@Path("id") id: Int): Response<DeleteDto>

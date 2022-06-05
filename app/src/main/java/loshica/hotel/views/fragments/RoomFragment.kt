@@ -71,7 +71,7 @@ class RoomFragment : Fragment(), View.OnClickListener, OnPickCard {
     }
 
     override fun onPickCard(position: Int) {
-        roomViewModel.setCurrentRoom(position + 1)
+        roomViewModel.setCurrentRoom(position)
         (activity as? IMainActivity)?.swipe(Position.ROOM)
     }
 }

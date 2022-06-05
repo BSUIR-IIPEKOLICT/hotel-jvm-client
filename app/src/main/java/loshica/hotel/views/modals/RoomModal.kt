@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -31,7 +32,7 @@ class RoomModal : DialogFragment(), View.OnClickListener {
         val builder = LOSDialogBuilder(requireActivity())
 
         layout = RoomModalBinding.inflate(requireActivity().layoutInflater)
-        typeId = roomViewModel.getCurrentRoom().type.id
+        typeId = if (roomViewModel.getIsEdit()) roomViewModel.getCurrentRoom().type.id else typeId
 
         with(layout!!) {
             if (roomViewModel.getIsEdit()) {
@@ -55,25 +56,30 @@ class RoomModal : DialogFragment(), View.OnClickListener {
 
     private fun onSubmit(dialogInterface: DialogInterface) {
         layout?.let {
-            val address: String? = it.roomAddressInput.text?.toString()
-            val description: String? = it.roomDescriptionInput.text?.toString()
-            val floor: Int? = it.roomFloorInput.text?.toString()?.toInt()
-            val places: Int? = it.roomPlacesInput.text?.toString()?.toInt()
+            try {
+                val address: String? = it.roomAddressInput.text?.toString()
+                val description: String? = it.roomDescriptionInput.text?.toString()
+                val floor: Int? = it.roomFloorInput.text?.toString()?.toInt()
+                val places: Int? = it.roomPlacesInput.text?.toString()?.toInt()
 
-            val isAddressValid: Boolean = address != null && address.isNotBlank()
-            val isDescriptionValid: Boolean = description != null && description.isNotBlank()
+                val isAddressValid: Boolean = address != null && address.isNotBlank()
+                val isDescriptionValid: Boolean = description != null && description.isNotBlank()
 
-            if (isAddressValid && isDescriptionValid && floor != null && places != null) {
-                roomViewModel.handleSubmit(
-                    RoomDto(
-                        type = typeId,
-                        address = address!!,
-                        description = description!!,
-                        floor = floor,
-                        places = places
+                if (isAddressValid && isDescriptionValid && floor != null && places != null) {
+                    roomViewModel.handleSubmit(
+                        RoomDto(
+                            type = typeId,
+                            address = address!!,
+                            description = description!!,
+                            floor = floor,
+                            places = places
+                        )
                     )
-                )
-            } else {
+                } else {
+                    throw Exception()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Invalid data", Toast.LENGTH_SHORT).show()
                 dialogInterface.cancel()
             }
         }
@@ -104,13 +110,13 @@ class RoomModal : DialogFragment(), View.OnClickListener {
 
     private fun onChangeTypes(types: List<Type>) {
         layout?.let { it ->
-            types.forEachIndexed { index, type ->
+            types.forEach { type ->
                 val radioButton = RadioButton(context)
-                val checkedButtonId: Int = if (roomViewModel.getIsEdit()) typeId else 1
+                typeId = if (roomViewModel.getIsEdit()) roomViewModel.getCurrentRoom().type.id else types[0].id
 
-                radioButton.id = index + 1
+                radioButton.id = type.id
                 radioButton.text = type.name
-                radioButton.isChecked = radioButton.id == checkedButtonId
+                radioButton.isChecked = radioButton.id == typeId
 
                 radioButton.setOnClickListener(this)
                 it.typeRadioGroup.addView(radioButton)

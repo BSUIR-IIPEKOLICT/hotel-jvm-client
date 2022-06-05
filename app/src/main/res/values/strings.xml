@@ -15,6 +15,7 @@
 
     <string name="edit_btn_alt">Edit button</string>
     <string name="create_btn_alt">Create button</string>
+    <string name="delete_btn_alt">Delete button</string>
 
     <string name="edit_room_modal_header">Edit room</string>
 

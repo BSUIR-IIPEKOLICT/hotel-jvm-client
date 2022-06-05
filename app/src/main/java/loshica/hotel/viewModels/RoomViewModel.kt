@@ -1,6 +1,7 @@
 package loshica.hotel.viewModels
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
@@ -40,8 +41,10 @@ class RoomViewModel(override val app: Application): BaseViewModel(app) {
 
     fun getIsEdit(): Boolean = isEdit
 
-    fun setCurrentRoom(roomId: Int?) {
-        currentRoom.value = rooms.value?.find { it.id == roomId } ?: Default.ROOM
+    fun setCurrentRoom(index: Int?) {
+        rooms.value?.let {
+            currentRoom.value = if (index == null) Default.ROOM else it[index]
+        }
     }
 
     fun setIsEdit(value: Boolean) {
@@ -53,6 +56,7 @@ class RoomViewModel(override val app: Application): BaseViewModel(app) {
             api.roomRepository.create(dto).let {
                 withContext(Dispatchers.Main) {
                     if (it.isSuccessful && it.body() != null) {
+                        Toast.makeText(app.applicationContext, "Room created", Toast.LENGTH_SHORT).show()
                         rooms.value = rooms.value?.plusElement(it.body()!!)
                     } else {
                         onError(it.message())
@@ -66,10 +70,12 @@ class RoomViewModel(override val app: Application): BaseViewModel(app) {
         val currentRoomId: Int = currentRoom.value?.id ?: return
 
         jobs.add(viewModelScope.launch(Dispatchers.IO) {
-            api.roomRepository.change(currentRoomId, dto).let {
+            api.roomRepository.change(currentRoomId, if (dto.isFree) "free" else "booked", dto).let {
                 withContext(Dispatchers.Main) {
                     if (it.isSuccessful) {
                         val changedRoom: Room? = it.body()
+
+                        Toast.makeText(app.applicationContext, "Room changed", Toast.LENGTH_SHORT).show()
 
                         currentRoom.value = changedRoom
                         rooms.value = rooms.value
@@ -87,11 +93,14 @@ class RoomViewModel(override val app: Application): BaseViewModel(app) {
 
     fun handleSubmit(dto: RoomDto) = if (!isEdit) createRoom(dto) else changeRoom(dto)
 
-    fun deleteRoom(roomId: Int) {
+    fun deleteRoom() {
+        val currentRoomId: Int = currentRoom.value?.id ?: return
+
         jobs.add(viewModelScope.launch(Dispatchers.IO) {
-            api.roomRepository.delete(roomId).let {
+            api.roomRepository.delete(currentRoomId).let {
                 withContext(Dispatchers.Main) {
                     if (it.isSuccessful) {
+                        Toast.makeText(app.applicationContext, "Room deleted", Toast.LENGTH_SHORT).show()
                         rooms.value = rooms.value?.filter { room -> room.id != it.body()?.id }
                     } else {
                         onError(it.message())

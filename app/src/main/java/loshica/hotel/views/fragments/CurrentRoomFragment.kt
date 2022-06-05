@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import loshica.hotel.databinding.CurrentRoomFragmentBinding
+import loshica.hotel.interfaces.IMainActivity
 import loshica.hotel.models.Room
+import loshica.hotel.shared.Position
 import loshica.hotel.viewModels.RoomViewModel
 import loshica.hotel.views.modals.RoomModal
 
@@ -30,6 +32,8 @@ class CurrentRoomFragment : Fragment(), View.OnClickListener {
 
         with (layout!!) {
             currentRoomObserver = Observer {
+                println(it.isFree)
+
                 roomTypeName.text = "Type: ${it.type.name}"
                 roomTypeOptions.text = "Options: ${it.type.options}"
                 roomTypePrice.text = "Price: ${it.type.price}$"
@@ -43,6 +47,8 @@ class CurrentRoomFragment : Fragment(), View.OnClickListener {
 
         layout!!.editRoomButton.setOnClickListener(this)
         layout!!.bookRoomButton.setOnClickListener(this)
+        layout!!.deleteRoomButton.setOnClickListener(this)
+
         return layout?.root
     }
 
@@ -64,10 +70,6 @@ class CurrentRoomFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         layout?.let {
             when(v) {
-                it.editRoomButton -> {
-                    roomViewModel.setIsEdit(true)
-                    RoomModal().show(requireActivity().supportFragmentManager, null)
-                }
                 it.bookRoomButton -> {
                     roomViewModel.setIsEdit(true)
                     val currentRoom: Room = roomViewModel.getCurrentRoom()
@@ -75,7 +77,17 @@ class CurrentRoomFragment : Fragment(), View.OnClickListener {
                     if (currentRoom.id != -1) {
                         currentRoom.isFree = !currentRoom.isFree
                         roomViewModel.handleSubmit(currentRoom.toDto())
-                    }
+                    } else {}
+                }
+                it.deleteRoomButton -> {
+                    roomViewModel.setIsEdit(false)
+                    roomViewModel.deleteRoom()
+                    roomViewModel.setCurrentRoom(null)
+                    (activity as? IMainActivity)?.swipe(Position.ROOMS)
+                }
+                it.editRoomButton -> {
+                    roomViewModel.setIsEdit(true)
+                    RoomModal().show(requireActivity().supportFragmentManager, null)
                 }
                 else -> {}
             }
