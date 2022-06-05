@@ -9,4 +9,23 @@
     <string name="room_description_placeholder">Description: unknown</string>
     <string name="room_address_placeholder">Address: unknown</string>
     <string name="room_places_placeholder">Places: unknown</string>
+
+    <string name="room_type_header">Type info</string>
+    <string name="room_info_header">Room info</string>
+
+    <string name="edit_btn_alt">Edit button</string>
+    <string name="create_btn_alt">Create button</string>
+
+    <string name="edit_room_modal_header">Edit room</string>
+
+    <string name="address">Address</string>
+    <string name="description">Description</string>
+    <string name="floor">Floor</string>
+    <string name="places">Places</string>
+    <string name="type">Type</string>
+    <string name="info">Info</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="book_btn_alt">Book room</string>
 </resources>

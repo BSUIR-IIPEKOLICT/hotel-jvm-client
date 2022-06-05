@@ -6,26 +6,28 @@ import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import loshica.hotel.databinding.ActivityMainBinding
+import loshica.hotel.databinding.MainActivityBinding
 import loshica.hotel.interfaces.IMainActivity
 import loshica.hotel.viewModels.RoomViewModel
-import loshica.hotel.adapters.FragmentAdapter
+import loshica.hotel.views.adapters.FragmentAdapter
 import loshica.hotel.viewModels.ConnectionViewModel
+import loshica.hotel.viewModels.TypeViewModel
 import loshica.hotel.views.PageTransformer
 import loshica.vendor.LOSActivity
 
 class MainActivity : LOSActivity(), IMainActivity {
 
-    private var layout: ActivityMainBinding? = null
+    private var layout: MainActivityBinding? = null
     private val roomViewModel: RoomViewModel by viewModels()
     private val connectionViewModel: ConnectionViewModel by viewModels()
+    private val typeViewModel: TypeViewModel by viewModels()
 
     private var hasConnectionObserver: Observer<Boolean>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        layout = ActivityMainBinding.inflate(layoutInflater)
+        layout = MainActivityBinding.inflate(layoutInflater)
         val fragmentAdapter = FragmentAdapter(this)
 
         with(layout!!) {
@@ -53,6 +55,7 @@ class MainActivity : LOSActivity(), IMainActivity {
         super.onStart()
         hasConnectionObserver?.let { connectionViewModel.hasConnection.observe(this, it) }
         connectionViewModel.checkConnection()
+        typeViewModel.loadTypes()
     }
 
     override fun onStop() {
@@ -64,6 +67,7 @@ class MainActivity : LOSActivity(), IMainActivity {
         super.onDestroy()
         roomViewModel.onDestroy()
         connectionViewModel.onDestroy()
+        typeViewModel.onDestroy()
     }
 
     override fun onBackPressed() {

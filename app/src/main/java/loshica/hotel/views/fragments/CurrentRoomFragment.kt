@@ -1,4 +1,4 @@
-package loshica.hotel.views
+package loshica.hotel.views.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -6,16 +6,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import loshica.hotel.databinding.FragmentCurrentRoomBinding
+import loshica.hotel.databinding.CurrentRoomFragmentBinding
 import loshica.hotel.models.Room
 import loshica.hotel.viewModels.RoomViewModel
+import loshica.hotel.views.modals.RoomModal
 
 class CurrentRoomFragment : Fragment(), View.OnClickListener {
 
-    private var layout: FragmentCurrentRoomBinding? = null
+    private var layout: CurrentRoomFragmentBinding? = null
     private val roomViewModel: RoomViewModel by activityViewModels()
 
     private var currentRoomObserver: Observer<Room>? = null
@@ -26,7 +26,7 @@ class CurrentRoomFragment : Fragment(), View.OnClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        layout = FragmentCurrentRoomBinding.inflate(inflater, container, false)
+        layout = CurrentRoomFragmentBinding.inflate(inflater, container, false)
 
         with (layout!!) {
             currentRoomObserver = Observer {
@@ -41,6 +41,8 @@ class CurrentRoomFragment : Fragment(), View.OnClickListener {
             }
         }
 
+        layout!!.editRoomButton.setOnClickListener(this)
+        layout!!.bookRoomButton.setOnClickListener(this)
         return layout?.root
     }
 
@@ -60,6 +62,23 @@ class CurrentRoomFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        TODO("Not yet implemented")
+        layout?.let {
+            when(v) {
+                it.editRoomButton -> {
+                    roomViewModel.setIsEdit(true)
+                    RoomModal().show(requireActivity().supportFragmentManager, null)
+                }
+                it.bookRoomButton -> {
+                    roomViewModel.setIsEdit(true)
+                    val currentRoom: Room = roomViewModel.getCurrentRoom()
+
+                    if (currentRoom.id != -1) {
+                        currentRoom.isFree = !currentRoom.isFree
+                        roomViewModel.handleSubmit(currentRoom.toDto())
+                    }
+                }
+                else -> {}
+            }
+        }
     }
 }

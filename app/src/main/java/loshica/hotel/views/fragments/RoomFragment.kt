@@ -1,4 +1,4 @@
-package loshica.hotel.views
+package loshica.hotel.views.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,17 +8,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import loshica.hotel.adapters.RoomAdapter
-import loshica.hotel.databinding.FragmentMainBinding
+import loshica.hotel.views.adapters.RoomAdapter
+import loshica.hotel.databinding.RoomFragmentBinding
 import loshica.hotel.interfaces.IMainActivity
 import loshica.hotel.interfaces.OnPickCard
 import loshica.hotel.models.Room
 import loshica.hotel.shared.Position
 import loshica.hotel.viewModels.RoomViewModel
+import loshica.hotel.views.modals.RoomModal
 
 class RoomFragment : Fragment(), View.OnClickListener, OnPickCard {
 
-    private var layout: FragmentMainBinding? = null
+    private var layout: RoomFragmentBinding? = null
     private val roomViewModel: RoomViewModel by activityViewModels()
 
     private var roomsObserver: Observer<List<Room>>? = null
@@ -28,20 +29,31 @@ class RoomFragment : Fragment(), View.OnClickListener, OnPickCard {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        layout = FragmentMainBinding.inflate(inflater, container, false)
+        layout = RoomFragmentBinding.inflate(inflater, container, false)
         val roomAdapter = RoomAdapter(this)
 
         with (layout!!) {
-            mainRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-            mainRecyclerView.adapter = roomAdapter
-
-            roomsObserver = Observer { roomAdapter.update(it) }
+            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            recyclerView.adapter = roomAdapter
         }
+
+        layout!!.createButton.setOnClickListener(this)
+        roomsObserver = Observer { roomAdapter.update(it) }
 
         return layout?.root
     }
 
-    override fun onClick(v: View?) {}
+    override fun onClick(v: View?) {
+        layout?.let {
+            when(v) {
+                it.createButton -> {
+                    roomViewModel.setIsEdit(false)
+                    RoomModal().show(requireActivity().supportFragmentManager, null)
+                }
+                else -> {}
+            }
+        }
+    }
 
     override fun onStart() {
         super.onStart()

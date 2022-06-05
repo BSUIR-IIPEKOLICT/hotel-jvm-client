@@ -1,10 +1,10 @@
-package loshica.hotel.adapters
+package loshica.hotel.views.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import loshica.hotel.views.CurrentRoomFragment
-import loshica.hotel.views.RoomFragment
+import loshica.hotel.views.fragments.CurrentRoomFragment
+import loshica.hotel.views.fragments.RoomFragment
 
 class FragmentAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
 
