@@ -4,4 +4,9 @@
     <string name="room_type_placeholder">Type: unknown</string>
     <string name="room_floor_placeholder">Floor: unknown</string>
     <string name="room_isFree_placeholder">Status: free</string>
+    <string name="room_type_options_placeholder">Options: no options</string>
+    <string name="room_type_price_placeholder">Price: unknown</string>
+    <string name="room_description_placeholder">Description: unknown</string>
+    <string name="room_address_placeholder">Address: unknown</string>
+    <string name="room_places_placeholder">Places: unknown</string>
 </resources>

@@ -2,20 +2,25 @@ package loshica.hotel
 
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import loshica.hotel.databinding.ActivityMainBinding
 import loshica.hotel.interfaces.IMainActivity
-import loshica.hotel.viewModels.RoomModel
-import loshica.hotel.views.FragmentAdapter
+import loshica.hotel.viewModels.RoomViewModel
+import loshica.hotel.adapters.FragmentAdapter
+import loshica.hotel.viewModels.ConnectionViewModel
 import loshica.hotel.views.PageTransformer
 import loshica.vendor.LOSActivity
 
 class MainActivity : LOSActivity(), IMainActivity {
 
     private var layout: ActivityMainBinding? = null
-    private val roomModel: RoomModel by viewModels()
+    private val roomViewModel: RoomViewModel by viewModels()
+    private val connectionViewModel: ConnectionViewModel by viewModels()
+
+    private var hasConnectionObserver: Observer<Boolean>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,8 +43,27 @@ class MainActivity : LOSActivity(), IMainActivity {
                 tab.text = resources.getStringArray(R.array.main_tabs)[position]
             }.attach()
 
+            hasConnectionObserver = Observer { if (!it) finish() }
+
             setContentView(root)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        hasConnectionObserver?.let { connectionViewModel.hasConnection.observe(this, it) }
+        connectionViewModel.checkConnection()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        hasConnectionObserver?.let { connectionViewModel.hasConnection.removeObserver(it) }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        roomViewModel.onDestroy()
+        connectionViewModel.onDestroy()
     }
 
     override fun onBackPressed() {

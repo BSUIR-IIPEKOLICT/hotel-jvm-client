@@ -1,4 +1,4 @@
-package loshica.hotel.views
+package loshica.hotel.adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

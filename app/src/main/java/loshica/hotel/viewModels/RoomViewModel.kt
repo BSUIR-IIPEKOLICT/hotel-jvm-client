@@ -1,17 +1,15 @@
 package loshica.hotel.viewModels
 
 import android.app.Application
-import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
+import loshica.hotel.core.BaseViewModel
 import loshica.hotel.dtos.RoomDto
 import loshica.hotel.models.Room
-import loshica.hotel.shared.Api
 import loshica.hotel.shared.Default
 
-class RoomModel(private val app: Application): AndroidViewModel(app) {
+class RoomViewModel(override val app: Application): BaseViewModel(app) {
 
     val rooms: MutableLiveData<List<Room>> = MutableLiveData(emptyList())
         get() = field
@@ -19,15 +17,13 @@ class RoomModel(private val app: Application): AndroidViewModel(app) {
     val currentRoom: MutableLiveData<Room> = MutableLiveData(Default.room)
         get() = field
 
-    private val jobs: MutableSet<Job> = mutableSetOf()
-
     init {
         loadRooms()
     }
 
     private fun loadRooms() {
         jobs.add(viewModelScope.launch(Dispatchers.IO) {
-            Api.roomRepository.getAll().let {
+            api.roomRepository.getAll().let {
                 withContext(Dispatchers.Main) {
                     if (it.isSuccessful) {
                         rooms.value = it.body()
@@ -49,7 +45,7 @@ class RoomModel(private val app: Application): AndroidViewModel(app) {
 
     fun createRoom(dto: RoomDto) {
         jobs.add(viewModelScope.launch(Dispatchers.IO) {
-            Api.roomRepository.create(dto).let {
+            api.roomRepository.create(dto).let {
                 withContext(Dispatchers.Main) {
                     if (it.isSuccessful) {
                         rooms.value?.plusElement(it.body())
@@ -63,7 +59,7 @@ class RoomModel(private val app: Application): AndroidViewModel(app) {
 
     fun changeRoom(id: Int, dto: RoomDto) {
         jobs.add(viewModelScope.launch(Dispatchers.IO) {
-            Api.roomRepository.change(id, dto).let {
+            api.roomRepository.change(id, dto).let {
                 withContext(Dispatchers.Main) {
                     if (it.isSuccessful) {
                         val changedRoom: Room? = it.body()
@@ -81,7 +77,7 @@ class RoomModel(private val app: Application): AndroidViewModel(app) {
 
     fun deleteRoom(roomId: Int) {
         jobs.add(viewModelScope.launch(Dispatchers.IO) {
-            Api.roomRepository.delete(roomId).let {
+            api.roomRepository.delete(roomId).let {
                 withContext(Dispatchers.Main) {
                     if (it.isSuccessful) {
                         rooms.value = rooms.value?.filter { room -> room.id != it.body()?.id }
@@ -91,13 +87,5 @@ class RoomModel(private val app: Application): AndroidViewModel(app) {
                 }
             }
         })
-    }
-
-    private fun onError(message: String) {
-        Toast.makeText(app.applicationContext, "Error: $message", Toast.LENGTH_SHORT).show()
-    }
-
-    fun onDestroy() {
-        jobs.forEach { it.cancel() }
     }
 }

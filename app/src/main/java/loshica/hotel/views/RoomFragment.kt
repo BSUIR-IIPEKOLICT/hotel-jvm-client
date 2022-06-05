@@ -8,17 +8,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import loshica.hotel.adapters.RoomAdapter
 import loshica.hotel.databinding.FragmentMainBinding
 import loshica.hotel.interfaces.IMainActivity
 import loshica.hotel.interfaces.OnPickCard
 import loshica.hotel.models.Room
 import loshica.hotel.shared.Position
-import loshica.hotel.viewModels.RoomModel
+import loshica.hotel.viewModels.RoomViewModel
 
-class MainFragment : Fragment(), View.OnClickListener, OnPickCard {
+class RoomFragment : Fragment(), View.OnClickListener, OnPickCard {
 
     private var layout: FragmentMainBinding? = null
-    private val roomModel: RoomModel by activityViewModels()
+    private val roomViewModel: RoomViewModel by activityViewModels()
 
     private var roomsObserver: Observer<List<Room>>? = null
 
@@ -42,24 +43,23 @@ class MainFragment : Fragment(), View.OnClickListener, OnPickCard {
 
     override fun onClick(v: View?) {}
 
-    override fun onResume() {
-        super.onResume()
-        roomsObserver?.let { roomModel.rooms.observe(this, it) }
+    override fun onStart() {
+        super.onStart()
+        roomsObserver?.let { roomViewModel.rooms.observe(this, it) }
     }
 
     override fun onStop() {
         super.onStop()
-        roomsObserver?.let { roomModel.rooms.removeObserver(it) }
+        roomsObserver?.let { roomViewModel.rooms.removeObserver(it) }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        roomModel.onDestroy()
         layout = null
     }
 
     override fun onPickCard(position: Int) {
-        roomModel.setCurrentRoom(position)
+        roomViewModel.setCurrentRoom(position + 1)
         (activity as? IMainActivity)?.swipe(Position.ROOM)
     }
 }
