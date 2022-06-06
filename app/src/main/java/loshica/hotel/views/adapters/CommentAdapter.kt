@@ -5,36 +5,36 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import loshica.hotel.databinding.RoomCardBinding
+import loshica.hotel.databinding.CommentCardBinding
 import loshica.hotel.interfaces.IPickHandler
-import loshica.hotel.models.Room
+import loshica.hotel.models.Comment
 
-class RoomAdapter(private val pickHandler: IPickHandler) : RecyclerView.Adapter<RoomAdapter.ViewHolder>() {
+class CommentAdapter(
+    private val pickHandler: IPickHandler
+) : RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
 
-    private var rooms: MutableList<Room> = mutableListOf()
-    private var layout: RoomCardBinding? = null
+    private var comments: MutableList<Comment> = mutableListOf()
+    private var layout: CommentCardBinding? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        layout = RoomCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        layout = CommentCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(layout!!, pickHandler)
     }
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val room: Room = rooms[position]
+        val comment: Comment = comments[position]
 
         with (holder.layout) {
-            roomCardType.text = "Type: ${room.type.name}"
-            roomCardFloor.text = "Floor: ${room.floor}"
-            roomCardStatus.text = "Status: ${if (room.isFree) "free" else "booked"}"
+            commentCardContent.text = comment.content
             root.setOnClickListener(holder)
         }
     }
 
-    override fun getItemCount(): Int = rooms.size
+    override fun getItemCount(): Int = comments.size
 
     class ViewHolder internal constructor(
-        val layout: RoomCardBinding,
+        val layout: CommentCardBinding,
         private val pickHandler: IPickHandler
     ) : RecyclerView.ViewHolder(layout.root), View.OnClickListener {
 
@@ -43,10 +43,10 @@ class RoomAdapter(private val pickHandler: IPickHandler) : RecyclerView.Adapter<
         }
     }
 
-    fun update(newRooms: List<Room>?) {
-        newRooms?.let {
-            rooms.clear()
-            rooms = it.toMutableList()
+    fun update(newComments: List<Comment>?) {
+        newComments?.let {
+            comments.clear()
+            comments = it.toMutableList()
             notifyDataSetChanged()
         }
     }

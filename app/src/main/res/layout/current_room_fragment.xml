@@ -55,7 +55,7 @@
             app:layout_constraintTop_toBottomOf="@+id/room_type_options" />
 
         <View
-            android:id="@+id/current_room_divider"
+            android:id="@+id/comment_card_divider"
             style="@style/LOSListDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -72,7 +72,7 @@
             android:textColor="?attr/colorAccent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/current_room_divider" />
+            app:layout_constraintTop_toBottomOf="@+id/comment_card_divider" />
 
         <TextView
             android:id="@+id/room_address"

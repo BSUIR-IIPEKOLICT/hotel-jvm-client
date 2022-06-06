@@ -39,8 +39,6 @@ class RoomViewModel(override val app: Application): BaseViewModel(app) {
         })
     }
 
-    fun getRooms(): List<Room> = rooms.value ?: emptyList()
-
     fun getCurrentRoom(): Room = currentRoom.value ?: Default.ROOM
 
     fun getIsEdit(): Boolean = isEdit
@@ -103,7 +101,7 @@ class RoomViewModel(override val app: Application): BaseViewModel(app) {
         })
     }
 
-    fun handleSubmit(dto: RoomDto) = if (!isEdit) createRoom(dto) else changeRoom(dto)
+    fun onSubmit(dto: RoomDto) = if (!isEdit) createRoom(dto) else changeRoom(dto)
 
     fun deleteRoom() {
         val currentRoomId: Int = currentRoom.value?.id ?: return
@@ -114,6 +112,7 @@ class RoomViewModel(override val app: Application): BaseViewModel(app) {
                     withContext(Dispatchers.Main) {
                         if (it.isSuccessful) {
                             Toast.makeText(app.applicationContext, "Room deleted", Toast.LENGTH_SHORT).show()
+                            currentRoom.value = Default.ROOM
                             rooms.value = rooms.value?.filter { room -> room.id != it.body()?.id }
                         } else {
                             throw Exception(it.message())

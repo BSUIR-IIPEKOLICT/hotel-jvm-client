@@ -1,5 +1,5 @@
 package loshica.hotel.interfaces
 
-interface OnPickCard {
+interface IPickHandler {
     fun onPickCard(position: Int)
 }

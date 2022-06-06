@@ -10,14 +10,21 @@
     <string name="room_address_placeholder">Address: unknown</string>
     <string name="room_places_placeholder">Places: unknown</string>
 
+    <string name="comment_content_placeholder">Unknown content</string>
+
     <string name="room_type_header">Type info</string>
     <string name="room_info_header">Room info</string>
 
     <string name="edit_btn_alt">Edit button</string>
     <string name="create_btn_alt">Create button</string>
     <string name="delete_btn_alt">Delete button</string>
+    <string name="book_btn_alt">Book room</string>
 
-    <string name="edit_room_modal_header">Edit room</string>
+    <string name="change_room_modal_header">Change room</string>
+    <string name="create_room_modal_header">Create room</string>
+
+    <string name="change_comment_modal_header">Change comment</string>
+    <string name="create_comment_modal_header">Create comment</string>
 
     <string name="connection_error">connection error</string>
 
@@ -27,8 +34,11 @@
     <string name="places">Places</string>
     <string name="type">Type</string>
     <string name="info">Info</string>
+    <string name="content">Content</string>
 
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="book_btn_alt">Book room</string>
+    <string name="create">Create</string>
+    <string name="change">Change</string>
+    <string name="delete">Delete</string>
 </resources>

@@ -76,13 +76,12 @@ class CurrentRoomFragment : Fragment(), View.OnClickListener {
 
                     if (currentRoom.id != -1) {
                         currentRoom.isFree = !currentRoom.isFree
-                        roomViewModel.handleSubmit(currentRoom.toDto())
+                        roomViewModel.onSubmit(currentRoom.toDto())
                     } else {}
                 }
                 it.deleteRoomButton -> {
                     roomViewModel.setIsEdit(false)
                     roomViewModel.deleteRoom()
-                    roomViewModel.setCurrentRoom(null)
                     (activity as? IMainActivity)?.swipe(Position.ROOMS)
                 }
                 it.editRoomButton -> {

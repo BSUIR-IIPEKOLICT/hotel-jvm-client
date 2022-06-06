@@ -8,6 +8,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import loshica.hotel.databinding.MainActivityBinding
 import loshica.hotel.interfaces.IMainActivity
+import loshica.hotel.viewModels.CommentViewModel
 import loshica.hotel.viewModels.RoomViewModel
 import loshica.hotel.views.adapters.FragmentAdapter
 import loshica.hotel.viewModels.ConnectionViewModel
@@ -21,6 +22,7 @@ class MainActivity : LOSActivity(), IMainActivity {
     private val roomViewModel: RoomViewModel by viewModels()
     private val connectionViewModel: ConnectionViewModel by viewModels()
     private val typeViewModel: TypeViewModel by viewModels()
+    private val commentViewModel: CommentViewModel by viewModels()
 
     private var hasConnectionObserver: Observer<Boolean>? = null
 
@@ -65,9 +67,11 @@ class MainActivity : LOSActivity(), IMainActivity {
 
     override fun onDestroy() {
         super.onDestroy()
+
         roomViewModel.onDestroy()
         connectionViewModel.onDestroy()
         typeViewModel.onDestroy()
+        commentViewModel.onDestroy()
     }
 
     override fun onBackPressed() {

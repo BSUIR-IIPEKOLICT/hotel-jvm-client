@@ -7,6 +7,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.16510416666666666" />
+        <entry key="app/src/main/res/layout/comment_card.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/comment_fragment.xml" value="0.18" />
+        <entry key="app/src/main/res/layout/comment_modal.xml" value="0.5" />
         <entry key="app/src/main/res/layout/current_room_fragment.xml" value="0.16510416666666666" />
         <entry key="app/src/main/res/layout/edit_room_modal.xml" value="0.16510416666666666" />
         <entry key="app/src/main/res/layout/fragment_current_room.xml" value="0.25" />

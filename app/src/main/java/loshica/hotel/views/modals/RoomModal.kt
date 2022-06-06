@@ -47,10 +47,20 @@ class RoomModal : DialogFragment(), View.OnClickListener {
 
         typesObserver = Observer { onChangeTypes(it) }
 
+        val titleRef: Int = if (roomViewModel.getIsEdit())
+            R.string.change_room_modal_header
+        else
+            R.string.create_room_modal_header
+
+        val positiveButtonRef: Int = if (roomViewModel.getIsEdit())
+            R.string.change
+        else
+            R.string.create
+
         return builder
             .setView(layout!!.root)
-            .setTitle(requireActivity().resources.getText(R.string.edit_room_modal_header))
-            .setPositiveButton(R.string.ok) { dialog, _ -> onSubmit(dialog) }
+            .setTitle(requireActivity().resources.getText(titleRef))
+            .setPositiveButton(positiveButtonRef) { dialog, _ -> onSubmit(dialog) }
             .create()
     }
 
@@ -66,7 +76,7 @@ class RoomModal : DialogFragment(), View.OnClickListener {
                 val isDescriptionValid: Boolean = description != null && description.isNotBlank()
 
                 if (isAddressValid && isDescriptionValid && floor != null && places != null) {
-                    roomViewModel.handleSubmit(
+                    roomViewModel.onSubmit(
                         RoomDto(
                             type = typeId,
                             address = address!!,

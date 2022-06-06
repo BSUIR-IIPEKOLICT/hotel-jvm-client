@@ -8,19 +8,21 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import loshica.hotel.views.adapters.RoomAdapter
 import loshica.hotel.databinding.RoomFragmentBinding
+import loshica.hotel.views.adapters.RoomAdapter
 import loshica.hotel.interfaces.IMainActivity
-import loshica.hotel.interfaces.OnPickCard
+import loshica.hotel.interfaces.IPickHandler
 import loshica.hotel.models.Room
 import loshica.hotel.shared.Position
+import loshica.hotel.viewModels.CommentViewModel
 import loshica.hotel.viewModels.RoomViewModel
 import loshica.hotel.views.modals.RoomModal
 
-class RoomFragment : Fragment(), View.OnClickListener, OnPickCard {
+class RoomFragment : Fragment(), View.OnClickListener, IPickHandler {
 
     private var layout: RoomFragmentBinding? = null
     private val roomViewModel: RoomViewModel by activityViewModels()
+    private val commentViewModel: CommentViewModel by activityViewModels()
 
     private var roomsObserver: Observer<List<Room>>? = null
 
@@ -33,11 +35,11 @@ class RoomFragment : Fragment(), View.OnClickListener, OnPickCard {
         val roomAdapter = RoomAdapter(this)
 
         with (layout!!) {
-            recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            recyclerView.adapter = roomAdapter
+            roomRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            roomRecyclerView.adapter = roomAdapter
         }
 
-        layout!!.createButton.setOnClickListener(this)
+        layout!!.roomCreateButton.setOnClickListener(this)
         roomsObserver = Observer { roomAdapter.update(it) }
 
         return layout?.root
@@ -46,7 +48,7 @@ class RoomFragment : Fragment(), View.OnClickListener, OnPickCard {
     override fun onClick(v: View?) {
         layout?.let {
             when(v) {
-                it.createButton -> {
+                it.roomCreateButton -> {
                     roomViewModel.setIsEdit(false)
                     RoomModal().show(requireActivity().supportFragmentManager, null)
                 }
@@ -72,6 +74,8 @@ class RoomFragment : Fragment(), View.OnClickListener, OnPickCard {
 
     override fun onPickCard(position: Int) {
         roomViewModel.setCurrentRoom(position)
+        commentViewModel.setRoomId(roomViewModel.getCurrentRoom().id)
+        commentViewModel.loadComments()
         (activity as? IMainActivity)?.swipe(Position.ROOM)
     }
 }
