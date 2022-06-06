@@ -8,6 +8,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import loshica.hotel.core.BaseViewModel
+import loshica.vendor.LOSApp
 
 class ConnectionViewModel(override val app: Application) : BaseViewModel(app) {
 
@@ -15,11 +16,15 @@ class ConnectionViewModel(override val app: Application) : BaseViewModel(app) {
 
     fun checkConnection() {
         jobs.add(viewModelScope.launch(Dispatchers.IO) {
-            api.mainRepository.healthCheck().let {
-                if (!it.isSuccessful) {
-                    withContext(Dispatchers.Main) { onError("No stable connection to server") }
-                    delay(2000).let { hasConnection.value = false }
+            try {
+                if (!LOSApp.isOnline(app)) throw Exception()
+
+                api.mainRepository.healthCheck().let {
+                    if (!it.isSuccessful) throw Exception()
                 }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) { onError("No stable connection to server") }
+                delay(2000).let { hasConnection.value = false }
             }
         })
     }

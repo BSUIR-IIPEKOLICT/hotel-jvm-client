@@ -19,6 +19,8 @@
 
     <string name="edit_room_modal_header">Edit room</string>
 
+    <string name="connection_error">connection error</string>
+
     <string name="address">Address</string>
     <string name="description">Description</string>
     <string name="floor">Floor</string>

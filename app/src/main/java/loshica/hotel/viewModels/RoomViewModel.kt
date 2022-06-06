@@ -23,14 +23,18 @@ class RoomViewModel(override val app: Application): BaseViewModel(app) {
 
     private fun loadRooms() {
         jobs.add(viewModelScope.launch(Dispatchers.IO) {
-            api.roomRepository.getAll().let {
-                withContext(Dispatchers.Main) {
-                    if (it.isSuccessful) {
-                        rooms.value = it.body()
-                    } else {
-                        onError(it.message())
+            try {
+                api.roomRepository.getAll().let {
+                    withContext(Dispatchers.Main) {
+                        if (it.isSuccessful) {
+                            rooms.value = it.body()
+                        } else {
+                            throw Exception(it.message())
+                        }
                     }
                 }
+            } catch (e: Exception) {
+                onError(e.message)
             }
         })
     }
@@ -53,15 +57,19 @@ class RoomViewModel(override val app: Application): BaseViewModel(app) {
 
     private fun createRoom(dto: RoomDto) {
         jobs.add(viewModelScope.launch(Dispatchers.IO) {
-            api.roomRepository.create(dto).let {
-                withContext(Dispatchers.Main) {
-                    if (it.isSuccessful && it.body() != null) {
-                        Toast.makeText(app.applicationContext, "Room created", Toast.LENGTH_SHORT).show()
-                        rooms.value = rooms.value?.plusElement(it.body()!!)
-                    } else {
-                        onError(it.message())
+            try {
+                api.roomRepository.create(dto).let {
+                    withContext(Dispatchers.Main) {
+                        if (it.isSuccessful && it.body() != null) {
+                            Toast.makeText(app.applicationContext, "Room created", Toast.LENGTH_SHORT).show()
+                            rooms.value = rooms.value?.plusElement(it.body()!!)
+                        } else {
+                            throw Exception(it.message())
+                        }
                     }
                 }
+            } catch (e: Exception) {
+                onError(e.message)
             }
         })
     }
@@ -70,23 +78,27 @@ class RoomViewModel(override val app: Application): BaseViewModel(app) {
         val currentRoomId: Int = currentRoom.value?.id ?: return
 
         jobs.add(viewModelScope.launch(Dispatchers.IO) {
-            api.roomRepository.change(currentRoomId, if (dto.isFree) "free" else "booked", dto).let {
-                withContext(Dispatchers.Main) {
-                    if (it.isSuccessful) {
-                        val changedRoom: Room? = it.body()
+            try {
+                api.roomRepository.change(currentRoomId, if (dto.isFree) "free" else "booked", dto).let {
+                    withContext(Dispatchers.Main) {
+                        if (it.isSuccessful) {
+                            val changedRoom: Room? = it.body()
 
-                        Toast.makeText(app.applicationContext, "Room changed", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(app.applicationContext, "Room changed", Toast.LENGTH_SHORT).show()
 
-                        currentRoom.value = changedRoom
-                        rooms.value = rooms.value
-                            ?.map { room -> if (room.id == changedRoom?.id) changedRoom else room }
-                            ?: emptyList()
-                    } else {
-                        onError(it.message())
+                            currentRoom.value = changedRoom
+                            rooms.value = rooms.value
+                                ?.map { room -> if (room.id == changedRoom?.id) changedRoom else room }
+                                ?: emptyList()
+                        } else {
+                            throw Exception(it.message())
+                        }
                     }
-
-                    isEdit = false
                 }
+            } catch (e: Exception) {
+                onError(e.message)
+            } finally {
+                isEdit = false
             }
         })
     }
@@ -97,15 +109,19 @@ class RoomViewModel(override val app: Application): BaseViewModel(app) {
         val currentRoomId: Int = currentRoom.value?.id ?: return
 
         jobs.add(viewModelScope.launch(Dispatchers.IO) {
-            api.roomRepository.delete(currentRoomId).let {
-                withContext(Dispatchers.Main) {
-                    if (it.isSuccessful) {
-                        Toast.makeText(app.applicationContext, "Room deleted", Toast.LENGTH_SHORT).show()
-                        rooms.value = rooms.value?.filter { room -> room.id != it.body()?.id }
-                    } else {
-                        onError(it.message())
+            try {
+                api.roomRepository.delete(currentRoomId).let {
+                    withContext(Dispatchers.Main) {
+                        if (it.isSuccessful) {
+                            Toast.makeText(app.applicationContext, "Room deleted", Toast.LENGTH_SHORT).show()
+                            rooms.value = rooms.value?.filter { room -> room.id != it.body()?.id }
+                        } else {
+                            throw Exception(it.message())
+                        }
                     }
                 }
+            } catch (e: Exception) {
+                onError(e.message)
             }
         })
     }

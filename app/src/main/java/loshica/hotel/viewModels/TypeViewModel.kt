@@ -13,14 +13,18 @@ class TypeViewModel(override val app: Application): BaseViewModel(app) {
 
     fun loadTypes() {
         jobs.add(viewModelScope.launch(Dispatchers.IO) {
-            api.typeRepository.getAll().let {
-                withContext(Dispatchers.Main) {
-                    if (it.isSuccessful) {
-                        types.value = it.body()
-                    } else {
-                        onError(it.message())
+            try {
+                api.typeRepository.getAll().let {
+                    withContext(Dispatchers.Main) {
+                        if (it.isSuccessful) {
+                            types.value = it.body()
+                        } else {
+                            throw Exception(it.message())
+                        }
                     }
                 }
+            } catch (e: Exception) {
+                onError(e.message)
             }
         })
     }
