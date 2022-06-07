@@ -41,11 +41,16 @@ class CommentModal : DialogFragment() {
         else
             R.string.create
 
+        val negativeButtonRef: Int = if (commentViewModel.getIsEdit())
+            R.string.delete
+        else
+            R.string.cancel
+
         return builder
             .setView(layout!!.root)
             .setTitle(requireActivity().resources.getText(titleRef))
             .setPositiveButton(positiveButtonRef) { dialog, _ -> onSubmit(dialog) }
-            .setNegativeButton(R.string.delete) { dialog, _ -> onDelete(dialog) }
+            .setNegativeButton(negativeButtonRef) { dialog, _ -> onDelete(dialog) }
             .create()
     }
 
@@ -63,8 +68,11 @@ class CommentModal : DialogFragment() {
     }
 
     private fun onDelete(dialogInterface: DialogInterface) {
-        commentViewModel.setIsEdit(false)
-        commentViewModel.deleteComment()
+        if (commentViewModel.getIsEdit()) {
+            commentViewModel.setIsEdit(false)
+            commentViewModel.deleteComment()
+        }
+
         dialogInterface.cancel()
     }
 

@@ -44,6 +44,7 @@ class CommentFragment : Fragment(), View.OnClickListener, IPickHandler {
         layout?.let {
             when(v) {
                 it.commentCreateButton -> {
+                    commentViewModel.setCurrentComment(null)
                     commentViewModel.setIsEdit(false)
                     CommentModal().show(requireActivity().supportFragmentManager, null)
                 }
